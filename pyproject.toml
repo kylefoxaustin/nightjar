@@ -1,6 +1,6 @@
 [project]
 name = "rescue-bird-analysis"
-version = "0.1.0"
+version = "0.2.0"
 description = "Host-side analysis tooling for rescue-bird mission telemetry"
 readme = "README.md"
 requires-python = ">=3.10"

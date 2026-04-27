@@ -32,12 +32,26 @@ def generate_launch_description():
         DeclareLaunchArgument("dsp_clock_mhz",  default_value="1100"),
         DeclareLaunchArgument("dsp_simd_lanes", default_value="32"),
         DeclareLaunchArgument("dsp_ops",        default_value="lens_distortion,pyramid_gaussian,optical_flow_init"),
+        DeclareLaunchArgument("pilot_model",    default_value="latency_aware"),
+        DeclareLaunchArgument("pilot_visual_reaction_ms", default_value="200"),
+        DeclareLaunchArgument("pilot_drone_speed_mps",    default_value="8"),
 
         Node(
             package="drone_telemetry",
             executable="telemetry_node",
             name="drone_telemetry",
             output="screen",
+        ),
+        Node(
+            package="drone_pilot",
+            executable="pilot_node",
+            name="drone_pilot",
+            output="screen",
+            additional_env={
+                "PILOT_MODEL":              LaunchConfiguration("pilot_model"),
+                "PILOT_VISUAL_REACTION_MS": LaunchConfiguration("pilot_visual_reaction_ms"),
+                "PILOT_DRONE_SPEED_MPS":    LaunchConfiguration("pilot_drone_speed_mps"),
+            },
         ),
         Node(
             package="drone_isp",

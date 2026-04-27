@@ -5,6 +5,43 @@ pipeline, and projects per-subsystem demands analytically — and the test
 strategy has to cover both. This doc lays out the layers from cheapest
 to most expensive.
 
+## The test harness (added in v0.2.0)
+
+For Layer 3 (integration on the SITL stack) the project ships a
+**trajectory-driven test harness**. Four standard flight scenarios
+exercise the workload envelope from "floor" to "ceiling":
+
+| Mission                       | Profile             | Workload regime                |
+|-------------------------------|---------------------|--------------------------------|
+| `test_cruise_straight.yaml`   | cruise_straight     | floor — constant heading       |
+| `test_gentle_maneuver.yaml`   | gentle_maneuver     | search — yaw + altitude osc    |
+| `test_medium_maneuver.yaml`   | medium_maneuver     | pursuit — figure-eight at 30°  |
+| `test_aerobatic_forest.yaml`  | aerobatic_forest    | ceiling — rapid 3-axis chaos   |
+
+Each scenario runs for 60 seconds. Trajectory generators
+(`instrumentation/trajectories/`) produce deterministic motion at 50 Hz.
+A measurement-only pilot model (`instrumentation/pilots/`) consumes
+glass-to-glass latency and produces flyability observations
+(control_quality_pct, estimated_overshoot_m, flyability_status).
+
+Run an individual test scenario:
+```bash
+./scripts/run_mission.sh test_aerobatic_forest --target rescue_bird_a720
+```
+
+Run all four in sequence (recommended for chip-spec validation):
+```bash
+for s in cruise_straight gentle_maneuver medium_maneuver aerobatic_forest; do
+    ./scripts/run_mission.sh test_$s --target rescue_bird_a720
+done
+```
+
+The partition report then shows per-scenario KPIs side-by-side. The
+chip is "flight-worthy" if all four scenarios PASS.
+
+See ADR 011 for the design rationale (why four scenarios, why
+measurement-only pilot, why deterministic seeds).
+
 ## Layer 1 — unit tests on the analytical model
 
 Cheapest. Highest ROI. Covered by `tests/unit/`.

@@ -1,0 +1,41 @@
+# test_gentle_maneuver.yaml
+# Test harness scenario 2 of 4. Sinusoidal yaw + altitude oscillation.
+# Models a typical search pattern.
+
+name: test_gentle_maneuver
+description: |
+  Drone weaves at gentle yaw amplitude (±20°) with sinusoidal altitude
+  variation. 60-second test. Models the workload during routine search
+  scanning. VIO sees moderate rotational flow, perception load steady.
+
+duration_s: 60
+
+trajectory:
+  profile: gentle_maneuver
+  rate_hz: 50
+  params:
+    speed_mps: 8.0
+    altitude_m: 50.0
+    yaw_amplitude_rad: 0.349    # 20°
+    altitude_amplitude_m: 5.0
+    period_s: 20.0
+
+start:
+  lat: 30.2672
+  lon: -97.7431
+  alt_m: 50
+
+pilot:
+  model: latency_aware
+  visual_reaction_ms: 200
+  drone_speed_mps: 8.0
+
+success_criteria:
+  perception_p99_latency_ms_under: 50
+  g2g_latency_p99_ms_under: 100
+  encode_dropped_frames_under_pct: 1.0
+  pilot_pct_unflyable_max: 0.0
+  pilot_pct_degraded_max: 5.0      # brief jitter excursions tolerable
+
+phases_expected:
+  - search

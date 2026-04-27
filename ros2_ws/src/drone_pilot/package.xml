@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<package format="3">
+  <n>drone_pilot</n>
+  <version>0.2.0</version>
+  <description>Pilot behavior model. Host-only, not deployed to silicon.</description>
+  <maintainer email="kylefoxaustin@gmail.com">Kyle Fox</maintainer>
+  <license>MIT</license>
+
+  <depend>rclpy</depend>
+  <depend>std_msgs</depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>

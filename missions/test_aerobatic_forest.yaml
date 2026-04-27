@@ -1,0 +1,51 @@
+# test_aerobatic_forest.yaml
+# Test harness scenario 4 of 4. Rapid 3-axis maneuvering.
+# Models pilot dodging branches at speed in a forest.
+# Worst-case workload — chip MUST handle this to be flight-worthy.
+
+name: test_aerobatic_forest
+description: |
+  Pseudo-random rapid yaw + roll + pitch + altitude changes for 60s.
+  Models pilot threading through a dense forest at speed. Worst-case
+  for every subsystem:
+    - perception sees rapid attitude changes (model staleness risk)
+    - VIO sees high rotational + translational flow simultaneously
+    - encode produces high-bitrate output due to constant scene change
+    - g2g latency budget is binding (FPV-grade <100ms required)
+    - pilot flyability metric is the headline KPI
+
+  Deterministic — same seed produces same trajectory each run.
+
+duration_s: 60
+
+trajectory:
+  profile: aerobatic_forest
+  rate_hz: 50
+  params:
+    speed_mps: 10.0
+    altitude_m: 15.0
+    seed: 42
+
+start:
+  lat: 30.2672
+  lon: -97.7431
+  alt_m: 15
+
+pilot:
+  model: latency_aware
+  visual_reaction_ms: 200
+  drone_speed_mps: 10.0
+
+# Note: tighter budgets than the other scenarios because
+# tree-dodging is unforgiving.
+success_criteria:
+  perception_p99_latency_ms_under: 50
+  g2g_latency_p99_ms_under: 100
+  encode_dropped_frames_under_pct: 2.0
+  pilot_pct_unflyable_max: 0.0       # ANY unflyable moment means crash
+  pilot_pct_degraded_max: 15.0
+  pilot_p99_overshoot_m_max: 1.5     # >1.5m overshoot in a forest = branch hit
+  vio_drift_rate_max_pct_per_s: 1.0
+
+phases_expected:
+  - track          # operator is actively piloting the whole time

@@ -101,6 +101,24 @@ python -m instrumentation.analysis.whatif.whatif_cli pareto \
 See [`docs/whatif_kpis.md`](docs/whatif_kpis.md) for the full slider catalog and
 worked examples for the competitive deck.
 
+## Test harness (v0.2.0)
+
+Four standardized test scenarios drive the simulated drone through known
+motion profiles so per-subsystem load can be measured under known stress.
+
+```bash
+./scripts/run_mission.sh test_cruise_straight   # workload floor
+./scripts/run_mission.sh test_gentle_maneuver   # search pattern
+./scripts/run_mission.sh test_medium_maneuver   # figure-8 at 30° bank
+./scripts/run_mission.sh test_aerobatic_forest  # ceiling: tree-dodging
+```
+
+A measurement-only pilot model translates measured glass-to-glass latency
+into flyability observations (control quality %, overshoot meters,
+flyable/degraded/unflyable status). The chip is "flight-worthy" if all
+four scenarios PASS. See [`docs/testing.md`](docs/testing.md) and
+[ADR 011](docs/decisions/011-test-harness.md) for design rationale.
+
 ## Quickstart
 
 ```bash

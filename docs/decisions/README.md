@@ -20,6 +20,7 @@ decision, what alternatives were considered, what we chose, and why.
 | 008 | LLM workload modeled as memory-BW-bound           | Accepted |
 | 009 | NPU efficiency factor of 0.55 default             | Accepted |
 | 010 | Glass-to-glass <100ms for tree-dodging            | Accepted |
+| 011 | Trajectory-driven test harness + measurement pilot| Accepted |
 
 Add new ADRs by copying the format of an existing one. Don't edit accepted
 ADRs in place — supersede them with a new one if a decision changes.

@@ -7,6 +7,7 @@
   <license>MIT</license>
 
   <exec_depend>drone_telemetry</exec_depend>
+  <exec_depend>drone_pilot</exec_depend>
   <exec_depend>drone_isp</exec_depend>
   <exec_depend>drone_dsp</exec_depend>
   <exec_depend>drone_perception</exec_depend>

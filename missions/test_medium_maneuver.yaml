@@ -1,0 +1,44 @@
+# test_medium_maneuver.yaml
+# Test harness scenario 3 of 4. Continuous figure-eight at 30° bank.
+# Models pursuit / target tracking.
+
+name: test_medium_maneuver
+description: |
+  Drone flies a figure-eight at 30° bank. 60 seconds of sustained
+  rotational + translational flow. Exercises VIO under realistic
+  pursuit conditions. Perception model must track moving features
+  through banking attitude. The "drone is following something" case.
+
+duration_s: 60
+
+trajectory:
+  profile: medium_maneuver
+  rate_hz: 50
+  params:
+    speed_mps: 12.0
+    altitude_m: 30.0
+    bank_angle_rad: 0.524        # 30°
+    turn_radius_m: 25.0
+
+start:
+  lat: 30.2672
+  lon: -97.7431
+  alt_m: 30
+
+pilot:
+  model: latency_aware
+  visual_reaction_ms: 200
+  drone_speed_mps: 12.0
+
+success_criteria:
+  perception_p99_latency_ms_under: 60
+  g2g_latency_p99_ms_under: 100    # FPV pilot must still be able to react
+  encode_dropped_frames_under_pct: 1.5
+  pilot_pct_unflyable_max: 0.0
+  pilot_pct_degraded_max: 10.0     # mild degradation acceptable
+  vio_drift_rate_max_pct_per_s: 0.5
+
+phases_expected:
+  - search
+  - acquire
+  - track

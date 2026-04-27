@@ -1,0 +1,46 @@
+# test_cruise_straight.yaml
+# Test harness scenario 1 of 4. Constant heading, constant altitude,
+# constant velocity. Establishes the per-subsystem WORKLOAD FLOOR.
+#
+# Pass criteria for this scenario:
+#   - All compute KPIs PASS comfortably
+#   - g2g latency p99 well under budget
+#   - Pilot flyability: 100% good
+#   - No frame drops in encode pipeline
+
+name: test_cruise_straight
+description: |
+  Trajectory-driven test harness mission. Drone flies a straight line
+  at constant altitude and speed for 60 seconds. This is the workload
+  floor — any chip configuration that fails this fails everything.
+
+duration_s: 60
+
+trajectory:
+  profile: cruise_straight
+  rate_hz: 50
+  params:
+    speed_mps: 8.0
+    altitude_m: 50.0
+    heading_rad: 0.0
+
+start:
+  lat: 30.2672
+  lon: -97.7431
+  alt_m: 50
+
+# Pilot model — measurement only, doesn't generate stick input
+pilot:
+  model: latency_aware
+  visual_reaction_ms: 200
+  drone_speed_mps: 8.0           # used for overshoot calc
+
+success_criteria:
+  perception_p99_latency_ms_under: 50
+  g2g_latency_p99_ms_under: 80
+  encode_dropped_frames_under_pct: 0.5
+  pilot_pct_unflyable_max: 0.0
+  pilot_pct_degraded_max: 0.0
+
+phases_expected:
+  - transit         # 60s of straight cruise; no targets, no phase changes
